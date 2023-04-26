@@ -21,6 +21,10 @@ function initApp() {
     .querySelector("#form-create-post")
     .addEventListener("submit", createPostClicked);
 
+  document
+    .querySelector("#form-delete-post")
+    .addEventListener("submit", deletePostClicked);
+
   //document.querySelector("#dialog-create-post").close();
 }
 
@@ -48,6 +52,11 @@ function createPostClicked(event) {
   createPost(title, body, image);
   form.reset();
   document.querySelector("#diaCP").close();
+}
+
+function deletePostClicked(event) {
+  const id = event.target.getAttribute("data-id");
+  deletePost(id);
 }
 
 // ============== posts ============== //
@@ -95,13 +104,15 @@ function showPost(postObject) {
     .querySelector("#posts article:last-child .btn-update")
     .addEventListener("click", updateClicked);
 
-<<<<<<< HEAD
   // called when delete button is clicked
-  function deleteClicked() {
-    console.log("Update button clicked");
+  function deleteClicked(event) {
+    console.log("Delete button clicked");
     document.querySelector("dialog-delete-post-title").textContent =
       postObject.title;
-    document.querySelector("#form-delete-post");
+    document
+      .querySelector("#form-delete-post")
+      .setAttribute("data-id", postObject.id);
+    document.querySelector("#dialog-delete-post").showModal();
     // to do
   }
 
@@ -110,19 +121,6 @@ function showPost(postObject) {
     console.log("Delete button clicked");
     // to do
   }
-=======
-    // called when delete button is clicked
-    function deleteClicked() {
-        console.log("Delete button clicked");
-        // to do
-    }
-
-    // called when update button is clicked
-    function updateClicked() {
-        console.log("Update button clicked");
-        // to do
-    }
->>>>>>> b353f87a4f5bbf63d1eb01399f89fed7a67cf810
 }
 
 // Create a new post - HTTP Method: POST
@@ -149,6 +147,13 @@ async function createPost(title, body, image) {
 
 // Update an existing post - HTTP Method: DELETE
 async function deletePost(id) {
+  const response = await fetch(`${endpoint}/posts/${id}.json`, {
+    method: "DELETE",
+  });
+  if (response.ok) {
+    console.log("A post have been deleted");
+    updatePostsGrid();
+  }
   // DELETE fetch request
   // check if response is ok - if the response is successful
   // update the post grid to display posts
