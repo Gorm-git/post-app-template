@@ -54,9 +54,27 @@ function createPostClicked(event) {
   document.querySelector("#diaCP").close();
 }
 
+function handleDeletePostButtons() {
+  const cancelButton = document.querySelector(
+    "#dialog-delete-post .btn-cancel"
+  );
+  const yesButton = document.querySelector(
+    '#dialog-delete-post button[type="submit"]'
+  );
+
+  cancelButton.addEventListener("click", closeWindow);
+  //yesButton.addEventListener("click", yesWindow);
+}
+
+function closeWindow() {
+  document.querySelector("#dialog-delete-post").close();
+}
+
 function deletePostClicked(event) {
   const id = event.target.getAttribute("data-id");
   deletePost(id);
+
+  console.log(deletePost);
 }
 
 // ============== posts ============== //
@@ -107,18 +125,21 @@ function showPost(postObject) {
   // called when delete button is clicked
   function deleteClicked(event) {
     console.log("Delete button clicked");
-    document.querySelector("dialog-delete-post-title").textContent =
+    document.querySelector("#dialog-delete-post-title").textContent =
       postObject.title;
     document
       .querySelector("#form-delete-post")
       .setAttribute("data-id", postObject.id);
     document.querySelector("#dialog-delete-post").showModal();
     // to do
+    document
+      .querySelector("#btn-cancel")
+      .addEventListener("click", closeWindow);
   }
 
   // called when update button is clicked
   function updateClicked() {
-    console.log("Delete button clicked");
+    console.log("Update button clicked");
     // to do
   }
 }
@@ -150,6 +171,7 @@ async function deletePost(id) {
   const response = await fetch(`${endpoint}/posts/${id}.json`, {
     method: "DELETE",
   });
+
   if (response.ok) {
     console.log("A post have been deleted");
     updatePostsGrid();
