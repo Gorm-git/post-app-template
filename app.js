@@ -25,6 +25,10 @@ function initApp() {
     .querySelector("#form-delete-post")
     .addEventListener("submit", deletePostClicked);
 
+  document
+    .querySelector("#form-update-post")
+    .addEventListener("submit", updatePostClicked);
+
   //document.querySelector("#dialog-create-post").close();
 }
 
@@ -75,6 +79,24 @@ function deletePostClicked(event) {
   deletePost(id);
 
   console.log(deletePost);
+}
+
+function updatePostClicked(event) {
+  console.log(event);
+  event.preventDefault();
+  const form = event.target;
+
+  const title = form.title.value;
+  const body = form.body.value;
+  const image = form.image.value;
+
+  console.log(title);
+  console.log(body);
+  console.log(image);
+
+  updatePost(title, body, image);
+  form.reset();
+  document.querySelector("#dialog-update-post").close();
 }
 
 // ============== posts ============== //
@@ -131,6 +153,7 @@ function showPost(postObject) {
       .querySelector("#form-delete-post")
       .setAttribute("data-id", postObject.id);
     document.querySelector("#dialog-delete-post").showModal();
+
     // to do
     document
       .querySelector("#btn-cancel")
@@ -140,7 +163,7 @@ function showPost(postObject) {
   // called when update button is clicked
   function updateClicked() {
     console.log("Update button clicked");
-    // to do
+    updatePost(postObject.id);
   }
 }
 
@@ -183,7 +206,20 @@ async function deletePost(id) {
 
 // Delete an existing post - HTTP Method: PUT
 async function updatePost(id, title, body, image) {
-  // post update to update
+  const postToUpdate = {
+    title,
+    body,
+    image,
+  };
+  const json = JSON.stringify(postToUpdate);
+  const response = await fetch(`${endpoint}/posts/${id}.json`, {
+    method: "PUT",
+    body: json,
+  });
+  if (response.ok) {
+    console.log("A post have been updated");
+    updatePostsGrid();
+  }
   // convert the JS object to JSON string
   // PUT fetch request with JSON in the body. Calls the specific element in resource
   // check if response is ok - if the response is successful
