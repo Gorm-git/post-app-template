@@ -82,20 +82,22 @@ function deletePostClicked(event) {
 }
 
 function updatePostClicked(event) {
+  event.preventDefault;
   console.log(event);
-  event.preventDefault();
   const form = event.target;
 
   const title = form.title.value;
   const body = form.body.value;
   const image = form.image.value;
 
+  const id = form.getAttribute("data-id");
+
   console.log(title);
   console.log(body);
   console.log(image);
 
-  updatePost(title, body, image);
-  form.reset();
+  updatePost(id, title, body, image);
+
   document.querySelector("#dialog-update-post").close();
 }
 
@@ -161,9 +163,17 @@ function showPost(postObject) {
   }
 
   // called when update button is clicked
-  function updateClicked() {
+  function updateClicked(event) {
     console.log("Update button clicked");
-    updatePost(postObject.id);
+    const updateForm = document.querySelector("#form-update-post");
+    updateForm.title.value = postObject.title;
+    updateForm.body.value = postObject.body;
+    updateForm.image.value = postObject.image;
+    updateForm.setAttribute("data-id", postObject.id);
+    document.querySelector("#dialog-update-post").showModal();
+    document
+      .querySelector("#form-update-post")
+      .addEventListener("submit", updatePostClicked);
   }
 }
 
